@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">  
+    <title>Chat - Socket</title>
+</head>
+<style>
+    body{
+        background-color:#A9A9A9;
+    }
+    #chat{
+        max-height: 300px;
+        min-height: 300px;
+        background-color: aliceblue;
+        overflow-y: scroll;
+        border-radius: 10px;
+    }
+</style>
+<body>
+    <div class="container">
+
+    
+        <h1>Chat with Socket</h1>
+
+        <div id="chat">
+        
+        </div><br>
+
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" id="username" placeholder="Username" aria-label="Username" autocomplete="off">
+            <span class="input-group-text">@</span>
+        </div>
+        
+        <div class="input-group">
+            <span class="input-group-text">Mensagem</span>
+            <textarea class="form-control" id="msg" aria-label="With textarea" autocomplete="off"></textarea>
+        </div>
+        <br>
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" type="button" onclick="enviar()">enviar</button>
+        </div>
+
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.js"></script>
+<script>
+    let socket = io("http://localhost:4000/");
+
+    socket.on("showmsg", (data) => {
+        let chat = document.getElementById("chat");
+        let p = document.createElement("p");
+        p.innerHTML = `${data.username}: ${data.msg}`
+        chat.append(p);
+
+    })
+
+    function enviar(){
+        let msgField = document.getElementById("msg");
+        let usernameField = document.getElementById("username");
+        let msg = msgField.value;
+        let username = usernameField.value;
+
+        socket.emit("msg", {msg: msg, username: username});
+
+    }
+
+</script>
+</html>
